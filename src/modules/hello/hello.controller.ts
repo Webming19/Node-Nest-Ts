@@ -14,7 +14,7 @@ import { HelloService } from './hello.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('/hello')
-@ApiTags('/hello')
+@ApiTags('hello模块')
 export class HelloController {
   // 使用constructor注入到一个对象中
   constructor(private readonly helloService: HelloService) {}
