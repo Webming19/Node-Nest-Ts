@@ -10,7 +10,7 @@ export class UserController {
 
   @Post('regist')
   @ApiOperation({
-    summary: '用户进行注册',
+    summary: '用户注册',
   })
   async registUser(@Body() userDto: User) {
     return await this.userService.regist(userDto);
