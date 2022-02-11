@@ -11,7 +11,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { HelloService } from './hello.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiQuery } from '@nestjs/swagger';
 
 @Controller('/hello')
 @ApiTags('hello模块')
@@ -21,8 +21,10 @@ export class HelloController {
 
   // Get请求的处理
   @Get()
+  @ApiQuery({ name: 'id', required: false })
   @ApiOperation({
     summary: 'Get测试接口',
+    description: 'get ...',
   })
   fetch(@Query() { id }, @Headers('token') token): string {
     console.log('token==>', token);

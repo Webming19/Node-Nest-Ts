@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/interface/user.interface';
+import { changePassword } from 'src/interface/changePassword.interface';
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,7 @@ export class UserService {
   ) {}
 
   /**
-   * @description 注册方法
+   * 注册方法
    * @date 2022/02/10
    * @param user
    * @returns {Promise<any>}
@@ -37,6 +38,56 @@ export class UserService {
       })
       .catch((err) => {
         console.warn(`出现错误:${err}`);
+      });
+  }
+
+  /**
+   * 用户登录
+   * @date 2022/02/11
+   * @param user
+   * @returns {Promise<any>}
+   */
+  public async login(user) {
+    return this.userModel
+      .find({
+        username: user.username,
+        password: user.password,
+      })
+      .then((res) => {
+        if (res.length) {
+          console.log('登陆成功==>', res);
+        } else {
+          console.log('用户名或密码错误==>', res);
+        }
+      })
+      .catch((err) => {
+        console.log(`出现错误：${err}，请重试`);
+      });
+  }
+
+  /**
+   * 修改密码
+   * @param user
+   * @returns {Promise<any>}
+   */
+  public async change(user: changePassword) {
+    return this.userModel
+      .updateOne(
+        {
+          username: user.username,
+          password: user.oldPassword,
+        },
+        { $set: { password: user.newPassword } },
+      )
+      .then((res) => {
+        if (res.modifiedCount) {
+          console.log('修改成功，重新登陆==>', res);
+        } else {
+          console.log('旧密码错误==>', res);
+        }
+      })
+      .catch((err) => {
+        console.log(`出现错误：${err}，请重试`);
       });
   }
 }
