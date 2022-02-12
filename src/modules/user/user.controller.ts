@@ -2,7 +2,6 @@ import { Body, Controller, Get, Query, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/interface/user.interface';
-import { changePassword } from 'src/interface/changePassword.interface';
 
 @Controller('user')
 @ApiTags('用户模块')
@@ -31,7 +30,7 @@ export class UserController {
   @ApiOperation({
     summary: '用户修改密码',
   })
-  async changePassword(@Body() userDto: changePassword) {
+  async changePassword(@Body() userDto: User) {
     return await this.userService.change(userDto);
   }
 }

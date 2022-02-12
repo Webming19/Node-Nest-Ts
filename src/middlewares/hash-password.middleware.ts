@@ -6,10 +6,19 @@ import { addSalt, encript } from '../utils/encription';
 export class HashPasswordMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     let userPassword = req.body['password'];
-    if (userPassword) {
-      userPassword = encript(userPassword, addSalt());
+    let newPassword = req.body['newPassword'];
+    if (newPassword) {
+      const salt = addSalt();
+      newPassword = encript(newPassword, salt);
+      console.log('newPassword-crypto==>', newPassword);
+      req.body['newPassword'] = newPassword;
+      req.body['salt'] = salt;
+    } else if (userPassword) {
+      const salt = addSalt();
+      userPassword = encript(userPassword, salt);
+      req.body['password'] = userPassword;
+      req.body['salt'] = salt;
     }
-    req.body['password'] = userPassword;
     next();
   }
 }

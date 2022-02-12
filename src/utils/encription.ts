@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 
-export const addSalt = () => crypto.randomBytes(3).toString('base64');
+export const addSalt = (): string => crypto.randomBytes(3).toString('base64');
 
 export function encript(password: string, salt: string): string {
   return crypto

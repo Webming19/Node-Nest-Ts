@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/interface/user.interface';
-import { changePassword } from 'src/interface/changePassword.interface';
 
 @Injectable()
 export class UserService {
@@ -70,12 +69,12 @@ export class UserService {
    * @param user
    * @returns {Promise<any>}
    */
-  public async change(user: changePassword) {
+  public async change(user: User) {
     return this.userModel
       .updateOne(
         {
           username: user.username,
-          password: user.oldPassword,
+          password: user.password,
         },
         { $set: { password: user.newPassword } },
       )
