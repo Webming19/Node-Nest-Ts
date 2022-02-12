@@ -16,6 +16,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  crypto: ^1.0.1
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -41,6 +42,7 @@ dependencies:
   '@nestjs/platform-express': 8.2.6_732a54a2558f64827b8cc4f9baac4f1f
   '@nestjs/swagger': 5.2.0_cd6b5974f24e5c923348da2fa49b4421
   '@nestx-log4js/core': 1.5.1_05842440808b455eff1a14b6221a041b
+  crypto: 1.0.1
   mongoose: 6.2.1
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
@@ -2125,6 +2127,11 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /crypto/1.0.1:
+    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
+    dev: false
 
   /cssom/0.3.8:
     resolution: {integrity: sha512-b0tGHbfegbhPJpxpiBPU2sCkigAqtM9O121le6bbOlgyV+NyGyCmVfJ6QW9eRjz8CpNfWEOYBIMIGRYkLwsIYg==}
