@@ -22,8 +22,17 @@ export class User extends Document {
   @ApiProperty({
     description: '新密码',
     example: '123456',
+    required: false,
   })
   readonly newPassword?: string;
+
+  /*@Prop()
+  @ApiProperty({
+    description: '删除用户名',
+    example: 'wzk',
+    required: false,
+  })
+  readonly removeUsername?: string;*/
 
   @Prop()
   readonly salt?: string;

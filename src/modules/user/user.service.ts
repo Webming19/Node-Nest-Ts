@@ -18,9 +18,7 @@ export class UserService {
    */
   public async regist(user: User) {
     return this.userModel
-      .find({
-        username: user.username,
-      })
+      .find({ username: user.username })
       .then((res) => {
         if (res.length) {
           console.log('用户名已存在');
@@ -83,6 +81,26 @@ export class UserService {
           console.log('修改成功，重新登陆==>', res);
         } else {
           console.log('旧密码错误==>', res);
+        }
+      })
+      .catch((err) => {
+        console.log(`出现错误：${err}，请重试`);
+      });
+  }
+
+  /**
+   * 删除用户
+   * @param username
+   * @returns {Promise<any>}
+   */
+  public async remove(username: string) {
+    return this.userModel
+      .deleteMany({ username })
+      .then((res) => {
+        if (res.deletedCount) {
+          console.log('删除成功==>', res);
+        } else {
+          console.log('该用户不存在==>', res);
         }
       })
       .catch((err) => {
