@@ -1,41 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/interface/user.interface';
+import { ResponseInterface } from '../../interface/response.interface';
+
+const logger = new Logger('user.service');
 
 @Injectable()
 export class UserService {
+  private response: ResponseInterface;
   constructor(
     // 引入之前定义的Model：USER_MODEL；并且是私有的只读，他是一个由User生成的Model类型的类
     @InjectModel('USER_MODEL') private readonly userModel: Model<User>,
   ) {}
 
   /**
+   * 按照用户名查询用户
+   * @param username
+   * @returns {Promise<Query<Array<HydratedDocument<User, {}, {}>>, User & {_id: User["_id"]}, {}, User>>}
+   */
+  private async findUser(username: string) {
+    return this.userModel.find({ username });
+  }
+  /**
    * 注册方法
    * @date 2022/02/10
    * @param user
-   * @returns {Promise<any>}
+   * @returns {Promise<User | void>}
    */
   public async regist(user: User) {
-    return this.userModel
-      .find({ username: user.username })
+    return this.findUser(user.username)
       .then((res) => {
         if (res.length) {
-          console.log('用户名已存在');
-          throw Error('用户已注册');
+          this.response = {
+            code: 406,
+            msg: '用户名已被占用',
+          };
+          throw this.response;
         }
       })
-      .then(() => {
+      .then(async () => {
         try {
           const createUser = new this.userModel(user);
-          return createUser.save();
+          await createUser.save();
+          this.response = {
+            code: 200,
+            msg: '用户注册成功！',
+          };
+          return this.response;
         } catch (error) {
-          throw Error('用户注册失败' + error);
+          this.response = {
+            code: 406,
+            msg: '用户注册失败，错误详情：' + error,
+          };
+          throw this.response;
         }
       })
       .catch((err) => {
-        console.warn(`出现错误:${err}`);
-      });
+        logger.warn(`用户${err.usermane}注册失败，错误信息:${err.msg}`);
+      })
+      .finally(() => this.response);
   }
 
   /**
@@ -95,7 +119,7 @@ export class UserService {
    */
   public async remove(username: string) {
     return this.userModel
-      .deleteMany({ username })
+      .deleteOne({ username })
       .then((res) => {
         if (res.deletedCount) {
           console.log('删除成功==>', res);
