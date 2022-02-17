@@ -46,8 +46,13 @@ export class AuthService {
       .then(async (dbUser: User) => {
         const isPass = this.authentication(user.password, dbUser);
         if (isPass) {
-          const token = await this.createToken(user);
-          this.response = { code: 200, msg: '登陆成功！', token };
+          /*const token = await this.createToken(user);
+          const userid = dbUser._id;*/
+          this.response = {
+            code: 200,
+            msg: '登陆成功！',
+            data: { token: await this.createToken(user), userid: dbUser._id },
+          };
           return this.response;
         } else {
           this.response = { code: 400, msg: '用户名或密码错误' };
