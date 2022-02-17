@@ -33,7 +33,7 @@ export class UserService {
       .then((res) => {
         if (res.length) {
           this.response = {
-            code: 406,
+            code: 400,
             msg: '用户名已被占用',
           };
           throw this.response;
@@ -48,18 +48,18 @@ export class UserService {
             msg: '用户注册成功！',
           };
           return this.response;
-        } catch (error) {
+        } catch (err) {
           this.response = {
-            code: 406,
-            msg: '用户注册失败，错误详情：' + error,
+            code: 400,
+            msg: '用户注册失败，错误详情：' + err,
           };
           throw this.response;
         }
       })
       .catch((err) => {
-        logger.warn(`用户${err.usermane}注册失败，错误信息:${err.msg}`);
-      })
-      .finally(() => this.response);
+        logger.warn(`用户${user.username}注册失败，错误信息:${err.msg}`);
+        return this.response;
+      });
   }
 
   /**
