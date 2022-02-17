@@ -15,6 +15,10 @@ const bootstrap = async () => {
     .setDescription('API文档介绍')
     .setVersion('1.0')
     .addTag('App总模块')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'jwt',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

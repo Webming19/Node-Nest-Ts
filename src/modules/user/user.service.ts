@@ -19,7 +19,7 @@ export class UserService {
    * @param username
    * @returns {Promise<Query<Array<HydratedDocument<User, {}, {}>>, User & {_id: User["_id"]}, {}, User>>}
    */
-  private async findUser(username: string) {
+  async findUser(username: string) {
     return this.userModel.find({ username });
   }
   /**
@@ -59,56 +59,6 @@ export class UserService {
       .catch((err) => {
         logger.warn(`用户${user.username}注册失败，错误信息:${err.msg}`);
         return this.response;
-      });
-  }
-
-  /**
-   * 用户登录
-   * @date 2022/02/11
-   * @param user
-   * @returns {Promise<any>}
-   */
-  public async login(user) {
-    return this.userModel
-      .find({
-        username: user.username,
-        password: user.password,
-      })
-      .then((res) => {
-        if (res.length) {
-          console.log('登陆成功==>', res);
-        } else {
-          console.log('用户名或密码错误==>', res);
-        }
-      })
-      .catch((err) => {
-        console.log(`出现错误：${err}，请重试`);
-      });
-  }
-
-  /**
-   * 修改密码
-   * @param user
-   * @returns {Promise<any>}
-   */
-  public async change(user: User) {
-    return this.userModel
-      .updateOne(
-        {
-          username: user.username,
-          password: user.password,
-        },
-        { $set: { password: user.newPassword } },
-      )
-      .then((res) => {
-        if (res.modifiedCount) {
-          console.log('修改成功，重新登陆==>', res);
-        } else {
-          console.log('旧密码错误==>', res);
-        }
-      })
-      .catch((err) => {
-        console.log(`出现错误：${err}，请重试`);
       });
   }
 

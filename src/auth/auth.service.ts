@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../interface/user.interface';
 import { encript, addSalt } from '../utils/encription';
+import { UserService } from '../modules/user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 const logger = new Logger('auth.service');
 
@@ -13,16 +15,9 @@ export class AuthService {
   constructor(
     // 引入之前定义的Model：USER_MODEL；并且是私有的只读，他是一个由User生成的Model类型的类
     @InjectModel('USER_MODEL') private readonly userModel: Model<User>,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
   ) {}
-
-  /**
-   * 按照用户名查询用户
-   * @param username
-   * @returns {Promise<Query<Array<HydratedDocument<User, {}, {}>>, User & {_id: User["_id"]}, {}, User>>}
-   */
-  private async findUser(username: string) {
-    return this.userModel.find({ username });
-  }
 
   /**
    * 用户鉴权
@@ -39,7 +34,8 @@ export class AuthService {
    * @returns {Promise<void>}
    */
   public async login(user) {
-    return await this.findUser(user.username)
+    return await this.userService
+      .findUser(user.username)
       .then((res) => {
         if (!res.length) {
           this.response = { code: 400, msg: '该用户不存在' };
@@ -47,10 +43,11 @@ export class AuthService {
         }
         return res[0];
       })
-      .then((dbUser: User) => {
+      .then(async (dbUser: User) => {
         const isPass = this.authentication(user.password, dbUser);
         if (isPass) {
-          this.response = { code: 200, msg: '登陆成功！' };
+          const token = await this.createToken(user);
+          this.response = { code: 200, msg: '登陆成功！', token };
           return this.response;
         } else {
           this.response = { code: 400, msg: '用户名或密码错误' };
@@ -63,9 +60,14 @@ export class AuthService {
       });
   }
 
+  /**
+   * 修改密码
+   * @param user
+   * @returns {Promise<any>}
+   */
   public async changePassword(user: User) {
     let salt: string;
-    await this.findUser(user.username).then((res) => {
+    await this.userService.findUser(user.username).then((res) => {
       salt = res[0].salt;
     });
     const newSalt = addSalt();
@@ -134,5 +136,14 @@ export class AuthService {
         logger.warn(`用户${user.username}修改密码失败，失败原因：${err.msg}`);
         return this.response;
       });*/
+  }
+
+  /**
+   * 生成token方法
+   * @param user
+   * @returns {Promise<string>}
+   */
+  private async createToken(user: User) {
+    return await this.jwtService.sign(user);
   }
 }

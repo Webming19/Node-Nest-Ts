@@ -5,5 +5,6 @@
 export interface ResponseInterface {
   code: number;
   msg: string;
+  token?: string;
   data?: object;
 }

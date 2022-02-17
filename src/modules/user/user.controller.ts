@@ -3,20 +3,22 @@ import {
   Controller,
   Get,
   Query,
-  Patch,
   Post,
   UseGuards,
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from 'src/interface/user.interface';
-import { AuthGuard } from '../../guards/auth.guard';
-import { Role } from '../role/role.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 @ApiTags('用户模块')
-@UseGuards(AuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -38,7 +40,8 @@ export class UserController {
   }
 
   @Get('hello')
-  @Role('admin')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('jwt')
   hello() {
     return 'hello nest';
   }
