@@ -28,24 +28,6 @@ export class UserController {
     return await this.userService.regist(userDto);
   }
 
-  @Get('login')
-  @ApiQuery({ name: 'username', example: 'hxd', required: true })
-  @ApiQuery({ name: 'password', example: '654321' })
-  @ApiOperation({
-    summary: '用户登录',
-  })
-  async userLogin(@Query() { username, password }) {
-    return await this.userService.login({ username, password });
-  }
-
-  @Patch('change')
-  @ApiOperation({
-    summary: '用户修改密码',
-  })
-  async changePassword(@Body() userDto: User) {
-    return await this.userService.change(userDto);
-  }
-
   @Delete('delete')
   @ApiQuery({ name: 'username', example: 'wzk', required: true })
   @ApiOperation({
