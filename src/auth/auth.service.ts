@@ -34,30 +34,26 @@ export class AuthService {
    * @returns {Promise<void>}
    */
   public async login(user) {
-    return await this.userService
-      .findUser(user.username)
-      .then((res) => {
-        if (!res.length) {
-          this.response = { code: 400, msg: '该用户不存在' };
-          throw this.response;
-        }
-        return res[0];
+    console.log(user);
+    return await this.userModel
+      .findOne({
+        username: user.username,
+        password: user.password,
       })
-      .then(async (dbUser: User) => {
-        const isPass = this.authentication(user.password, dbUser);
-        if (isPass) {
-          /*const token = await this.createToken(user);
-          const userid = dbUser._id;*/
-          this.response = {
-            code: 200,
-            msg: '登陆成功！',
-            data: { token: await this.createToken(user), userid: dbUser._id },
-          };
-          return this.response;
-        } else {
+      .then((res) => {
+        if (!res) {
           this.response = { code: 400, msg: '用户名或密码错误' };
           throw this.response;
         }
+        return res;
+      })
+      .then(async (dbUser: User) => {
+        this.response = {
+          code: 200,
+          msg: '登陆成功！',
+          data: { token: await this.createToken(user), userid: dbUser._id },
+        };
+        return this.response;
       })
       .catch((err) => {
         logger.warn(`登陆失败，失败原因：${err.msg}`);

@@ -8,17 +8,17 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get()
+  @Get('login')
   @ApiQuery({ name: 'username', example: 'hxd', required: true })
   @ApiQuery({ name: 'password', example: '654321' })
   @ApiOperation({
     summary: '用户登录',
   })
-  async login(@Query() { username, password }) {
-    return await this.authService.login({ username, password });
+  async login(@Body() user: User) {
+    return await this.authService.login(user);
   }
 
-  @Patch()
+  @Patch('change')
   @ApiOperation({
     summary: '用户修改密码',
   })

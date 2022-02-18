@@ -43,6 +43,6 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('jwt')
   hello() {
-    return 'hello nest';
+    return 'hello Nest!';
   }
 }
