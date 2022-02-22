@@ -15,7 +15,9 @@ export class HashPasswordMiddleware implements NestMiddleware {
       case 'GET':
         // 登录
         let dbSalt: string;
-        const username = <string>url.parse(req.url, true).query['username'];
+        const username: string = <string>(
+          url.parse(req.url, true).query['username']
+        );
         await this.userService.findUser(username).then((_) => {
           dbSalt = _[0].salt;
         });
@@ -23,9 +25,7 @@ export class HashPasswordMiddleware implements NestMiddleware {
           <string>url.parse(req.url, true).query['password'],
           dbSalt,
         );
-        req.body['username'] = username;
-        req.body['password'] = userPassword;
-        req.body['salt'] = dbSalt;
+        req['user'] = { username, password: userPassword };
         break;
       case 'POST':
         // 注册

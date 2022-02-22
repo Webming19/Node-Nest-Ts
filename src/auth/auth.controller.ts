@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from 'src/interface/user.interface';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -14,7 +14,7 @@ export class AuthController {
   @ApiOperation({
     summary: '用户登录',
   })
-  async login(@Body() user: User) {
+  async login(@Req() { user }) {
     return await this.authService.login(user);
   }
 
